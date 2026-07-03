@@ -111,4 +111,180 @@
             color: #555;
             display: none;
             border-top: 1px dashed #e0e0e0;
-            padding-top:
+            padding-top: 12px;
+            font-size: 0.95em;
+        }
+        .feedback {
+            margin-top: 12px;
+            font-family: inherit;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+        .correct { color: #27ae60; font-weight: bold; }
+        .incorrect { color: #e67e22; font-weight: bold; text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+<div class="topo-acoes">
+    <button class="btn-inverter" id="toggle-modo" onclick="alternarModo()">
+        🔄 Modo: Espanhol ➔ Português
+    </button>
+</div>
+
+<div class="container">
+    <div id="lista-frases"></div>
+</div>
+
+<script>
+    // Base de dados estável com as 40 frases essenciais de Hotel
+    const frases = [
+["Buenos días, ¿en qué puedo ayudarle?","Bom dia, em que posso ajudá-lo?"],
+["¿Está buscando algo en especial?","Está procurando algo em especial?"],
+["¿Qué talla necesita?","Qual tamanho você precisa?"],
+["¿Qué color prefiere?","Qual cor você prefere?"],
+["Tenemos este modelo en varios colores.","Temos este modelo em várias cores."],
+["Puede probárselo si quiere.","Pode experimentar se quiser."],
+["Este producto está en oferta.","Este produto está em promoção."],
+["Este es uno de los más vendidos.","Este é um dos mais vendidos."],
+["¿Quiere ver otro modelo?","Quer ver outro modelo?"],
+["¿Busca un regalo?","Está procurando um presente?"],
+["Podemos envolverlo para regalo.","Podemos embrulhá-lo para presente."],
+["Cuesta treinta euros.","Custa trinta euros."],
+["Tenemos un descuento del veinte por ciento.","Temos um desconto de vinte por cento."],
+["¿Quiere pagar con tarjeta o en efectivo?","Vai pagar com cartão ou em dinheiro?"],
+["Aceptamos tarjetas internacionales.","Aceitamos cartões internacionais."],
+["Puede pagar sin contacto.","Pode pagar por aproximação."],
+["Aquí tiene su recibo.","Aqui está o seu recibo."],
+["¿Necesita una bolsa?","Precisa de uma sacola?"],
+["Muchas gracias por su compra.","Muito obrigado pela sua compra."],
+["Que tenga un buen día.","Tenha um bom dia."],
+["¿Puedo ayudarle en algo más?","Posso ajudá-lo em mais alguma coisa?"],
+["Lo siento, está agotado.","Sinto muito, está esgotado."],
+["Voy a comprobar el stock.","Vou verificar o estoque."],
+["Podemos pedirlo para usted.","Podemos encomendá-lo para você."],
+["Llegará la próxima semana.","Chegará na próxima semana."],
+["Tenemos su talla.","Temos o seu tamanho."],
+["Solo nos queda este color.","Só nos resta esta cor."],
+["¿Prefiere este modelo o aquel?","Prefere este modelo ou aquele?"],
+["La caja está al fondo de la tienda.","O caixa fica no fundo da loja."],
+["Puede cambiar el producto en treinta días.","Pode trocar o produto em até trinta dias."],
+["Conserve el recibo, por favor.","Guarde o recibo, por favor."],
+["Tiene dos años de garantía.","Tem dois anos de garantia."],
+["¿Tiene alguna duda?","Tem alguma dúvida?"],
+["Sígame, por favor.","Siga-me, por favor."],
+["Espere un momento, por favor.","Espere um momento, por favor."],
+["Ya vuelvo.","Já volto."],
+["Esperamos verle de nuevo.","Esperamos vê-lo novamente."],
+["Gracias por visitarnos.","Obrigado por nos visitar."],
+["Ha sido un placer atenderle.","Foi um prazer atendê-lo."],
+["Hasta luego.","Até logo."]
+];
+
+    let modoInvertido = false;
+    const listaContainer = document.getElementById('lista-frases');
+
+    function normalizar(texto) {
+        return texto.toLowerCase()
+            .replace(/[¿?¡!.,]/g, "")
+            .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+            .trim();
+    }
+
+    function alternarModo() {
+        modoInvertido = !modoInvertido;
+        const btnModo = document.getElementById('toggle-modo');
+        
+        if(modoInvertido) {
+            btnModo.innerText = "🔄 Desafio: Português ➔ Espanhol";
+            btnModo.classList.add('ativo');
+        } else {
+            btnModo.innerText = "🔄 Modo: Espanhol ➔ Português";
+            btnModo.classList.remove('ativo');
+        }
+        renderizarLista();
+    }
+
+    function comparar(original, falado, feedbackId, tradId) {
+        const originalWords = original.split(' ');
+        const faladoWords = normalizar(falado).split(' ');
+        
+        let htmlResultado = "";
+        
+        originalWords.forEach(word => {
+            const wordClean = normalizar(word);
+            if (faladoWords.includes(wordClean)) {
+                htmlResultado += `<span class="correct">${word}</span> `;
+            } else {
+                htmlResultado += `<span class="incorrect">${word}</span> `;
+            }
+        });
+
+        document.getElementById(feedbackId).innerHTML = htmlResultado;
+        document.getElementById(tradId).style.display = 'block';
+    }
+
+    function renderizarLista() {
+        listaContainer.innerHTML = "";
+        frases.forEach((par, index) => {
+            const es = par[0];
+            const pt = par[1];
+            
+            const fraseVisual = modoInvertido ? pt : es;
+            const rotuloRevelacao = modoInvertido ? "Resposta certa em Espanhol:" : "Tradução:";
+            const textoRevelacao = modoInvertido ? es : pt;
+
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+                <span class="frase-guia">${fraseVisual}</span>
+                <button class="btn-mic" id="btn-${index}" onclick="iniciarGravacao(${index})">
+                    🎤 Traduzir e Falar
+                </button>
+                <div class="feedback" id="feedback-${index}"></div>
+                <div class="revelacao" id="trad-${index}">
+                    <strong>${rotuloRevelacao}</strong> ${textoRevelacao}
+                </div>
+            `;
+            listaContainer.appendChild(card);
+        });
+    }
+
+    function iniciarGravacao(index) {
+        const btn = document.getElementById(`btn-${index}`);
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        
+        recognition.lang = 'es-ES';
+        recognition.interimResults = false;
+
+        recognition.onstart = () => {
+            btn.classList.add('listening');
+            btn.innerText = 'Ouvindo... Fale agora';
+        };
+
+        recognition.onresult = (event) => {
+            const text = event.results[0][0].transcript;
+            comparar(frases[index][0], text, `feedback-${index}`, `trad-${index}`);
+        };
+
+        recognition.onerror = () => {
+            alert("Não consegui ouvir claramente. Tente novamente!");
+        };
+
+        recognition.onend = () => {
+            btn.classList.remove('listening');
+            btn.innerText = '🎤 Traduzir e Falar';
+        };
+
+        try {
+            recognition.start();
+        } catch (e) {
+            alert("Erro ao acessar o microfone: " + e.message);
+        }
+    }
+
+    renderizarLista();
+</script>
+
+</body>
+</html>
