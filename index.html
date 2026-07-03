@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voz Luno - Treino Loja</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 20px;
+            padding-top: 75px; /* Espaço para o botão fixo do topo */
+            color: #2c3e50;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        /* Topo Fixo com o Botão Inverter */
+        .topo-acoes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: #ffffff;
+            padding: 12px 20px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+        }
+        
+        /* Botão Inverter seguindo o padrão 3D escuro do App */
+        .btn-inverter {
+            background: linear-gradient(to bottom, #4a4a4a 0%, #2b2b2b 100%);
+            color: white;
+            border: 1px solid #1a1a1a;
+            padding: 10px 24px;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.2), 0 2px 4px rgba(0,0,0,0.3);
+            text-shadow: 0 -1px 0 rgba(0,0,0,0.4);
+        }
+        .btn-inverter.ativo {
+            background: linear-gradient(to bottom, #2ecc71 0%, #27ae60 100%);
+            border-color: #1e7e43;
+        }
+        
+        /* Estilização dos Cards */
+        .card {
+            background: white;
+            padding: 20px;
+            margin-bottom: 16px;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+            border-left: 5px solid #4a4a4a;
+        }
+        .frase-guia {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 14px;
+            display: block;
+            line-height: 1.4;
+        }
+        
+        /* Botão de Microfone com estilo 3D do App */
+        .btn-mic {
+            background: linear-gradient(to bottom, #4c4c4c 0%, #2c2c2c 100%);
+            color: white;
+            border: 1px solid #1a1a1a;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: bold;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.2), 0 3px 5px rgba(0,0,0,0.4);
+            text-shadow: 0 -1px 0 rgba(0,0,0,0.5);
+            transition: transform 0.1s;
+        }
+        .btn-mic:active {
+            transform: scale(0.99);
+            background: linear-gradient(to bottom, #222222 0%, #333333 100%);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.6);
+        }
+        .btn-mic.listening {
+            background: linear-gradient(to bottom, #e74c3c 0%, #c0392b 100%);
+            border-color: #7f8c8d;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.8; }
+            100% { opacity: 1; }
+        }
+        .revelacao {
+            margin-top: 15px;
+            font-style: italic;
+            color: #555;
+            display: none;
+            border-top: 1px dashed #e0e0e0;
+            padding-top:
